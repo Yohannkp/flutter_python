@@ -6,7 +6,7 @@ try:
     os.mkdir("Repository")
 except:
      print("Dossier déjà existant")
-
+"""
 print("Entrer le nom de votre classe")
 nom_classe = input()
 print("Combien d'attributs avez vous ?")
@@ -51,18 +51,23 @@ nomFichier = "Repository/{}Repository.dart".format(nom_classe)
 with open("{}".format(nomFichier),'w') as r:
       r.write("import 'dart:io';\nimport 'package:cloud_firestore/cloud_firestore.dart';\nimport 'package:firebase_auth/firebase_auth.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:locationdemaison/Model/Personne.dart';\nimport 'package:locationdemaison/Model/Post.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:path/path.dart' as Path;\nclass {}".format(nomRpository))
       r.write("{")
+      r.write("\n\n")
       r.write("\nStream<List<{}>> read{}()=>FirebaseFirestore.instance.collection('{}').where('uid',isEqualTo: _auth.currentUser?.uid).snapshots().map((snapshot) => snapshot.docs.map((doc) =>{}.fromJson(doc.data())).toList());".format(nom_classe,nom_classe,nom_classe,nom_classe))
       r.write("\n")
       r.write("\nStream<List<{}>> readAll{}()=>FirebaseFirestore.instance.collection('{}').snapshots().map((snapshot) => snapshot.docs.map((doc) =>{}.fromJson(doc.data())).toList());\n".format(nom_classe,nom_classe,nom_classe,nom_classe))
+      r.write("\n\n")
       r.write("Future Update{}({} {}) async".format(nom_classe,nom_classe,nom_classe))
       r.write("{\n")
+      r.write("\n\n")
       r.write("final doc{} = FirebaseFirestore.instance.collection('{}').doc({}.id);".format(nom_classe,nom_classe,nom_classe))
+      r.write("\n\n")
       r.write("\n doc{}.update(".format(nom_classe))
       r.write("{")
       for i in range(2,nombre_attributs+2):
         r.write("'{}' : {}.{}".format(attributs[i],nom_classe,attributs[i]))
       r.write("}")
       r.write(");")
+      r.write("\n\n")
       r.write("}")
       r.write("\n\n\n")
 
@@ -83,3 +88,51 @@ with open("{}".format(nomFichier),'w') as r:
       r.write("doc{}.set(data);\nreturn path;".format(nom_classe))
       r.write("\n}\n\n")
       r.write("}")
+
+
+"""
+#Creation de la partie Authentification
+
+
+#Model D'authentification
+with open("Model/user.dart","w") as u:
+    u.write("class AppUser")
+    u.write("{\n")
+    u.write("\n")
+    u.write("String uid;\n\n")
+    u.write("AppUser(")
+    u.write("{\n")
+    u.write("required this.uid")
+    u.write("\n")
+    u.write("});")
+    u.write("\n")
+    u.write("}")
+
+with open("Repository/Authentification.dart","w") as h :
+    h.write("import 'package:cloud_firestore/cloud_firestore.dart';\nimport 'package:firebase_auth/firebase_auth.dart';\nimport 'package:flutter/material.dart';\nimport 'package:locationdemaison/Model/Personne.dart';\nimport 'package:locationdemaison/Model/Post.dart';\nimport 'package:locationdemaison/Model/user.dart';\n")
+    h.write("\n\n")
+    h.write("Class AuthentificationService")
+    h.write("{\n")
+    h.write("final FirebaseAuth _auth = FirebaseAuth.instance;\n\n")
+    h.write("AppUser? _userFromFireBaseUser(User? user)")
+    h.write("{\n")
+    h.write("return user != null ? AppUser(uid: user.uid) : null;")
+    h.write("")
+    h.write("\n}\n\n")
+    h.write("Stream<AppUser?> get user{\n\nreturn _auth.authStateChanges().map(_userFromFireBaseUser);\n\n}\n\n")
+    h.write("Future signInWithEmailAndPassword(String email,String password) async{\ntry{\n\t_auth.authStateChanges().listen((User? user) {\n\tif (user == null) {\n\tprint('User is currently signed out!');\n\t}else {\n\tprint('User is signed in!');\n}\n});\n\n")
+    h.write("UserCredential result =await _auth.signInWithEmailAndPassword(email: email, password: password);")
+    h.write("User? user = result.user;\nreturn _userFromFireBaseUser(user);\n\n}")
+    h.write("catch(exeption){")
+    h.write("print(exeption.toString());\n}\n}\n\n")
+    h.write("Future registerInWithEmailAndPassword(String email,String password) async{\ntry{\n\tprint('Inscription')\n;_auth.authStateChanges().listen((User? user) \n{\nif (user == null) {\nprint('User is currently signed out!');\n} else \n{\nprint('User is signed in!');\n}\n});\n\n")
+    h.write("UserCredential result =await _auth.createUserWithEmailAndPassword(email: email, password: password);\nUser? user = result.user;\nreturn _userFromFireBaseUser(user);\n}\ncatch(exeption){\nprint(exeption.toString());\n}\n\n}\n\n")
+    h.write("Future signOut() async{\ntry{\n\treturn await _auth.signOut():\n}catch(exeption){\nprint(exeption.toString());\nreturn null;\n}\n}")
+    
+    
+    
+    
+    
+    
+    
+    h.write("\n}")

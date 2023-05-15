@@ -4,9 +4,8 @@ class Etudiant {
  String uid;
  String Nom;
  String Prenom;
- String Age;
- String Sex;
-Etudiant({required this.id,required this.uid,required this.Nom,required this.Prenom,required this.Age,required this.Sex,});
+ String SSex;
+Etudiant({required this.id,required this.uid,required this.Nom,required this.Prenom,required this.SSex,});
 
 Map<String, dynamic> toJson(){
 return{
@@ -14,9 +13,8 @@ return{
 'uid' : uid ,
 'Nom' : Nom ,
 'Prenom' : Prenom ,
-'Age' : Age ,
-'Sex' : Sex ,
+'SSex' : SSex ,
 };}
-static Etudiant fromJson(Map<String,dynamic> json) => Etudiant(id: json['id'],uid: json['uid'],Nom: json['Nom'],Prenom: json['Prenom'],Age: json['Age'],Sex: json['Sex'],);
+static Etudiant fromJson(Map<String,dynamic> json) => Etudiant(id: json['id'],uid: json['uid'],Nom: json['Nom'],Prenom: json['Prenom'],SSex: json['SSex'],);
 
 }

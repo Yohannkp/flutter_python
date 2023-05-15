@@ -7,12 +7,22 @@ import 'package:locationdemaison/Model/Post.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as Path;
 class EtudiantRepository{
+
+
 Stream<List<Etudiant>> readEtudiant()=>FirebaseFirestore.instance.collection('Etudiant').where('uid',isEqualTo: _auth.currentUser?.uid).snapshots().map((snapshot) => snapshot.docs.map((doc) =>Etudiant.fromJson(doc.data())).toList());
 
 Stream<List<Etudiant>> readAllEtudiant()=>FirebaseFirestore.instance.collection('Etudiant').snapshots().map((snapshot) => snapshot.docs.map((doc) =>Etudiant.fromJson(doc.data())).toList());
+
+
 Future UpdateEtudiant(Etudiant Etudiant) async{
+
+
 final docEtudiant = FirebaseFirestore.instance.collection('Etudiant').doc(Etudiant.id);
- docEtudiant.update({'Nom' : Etudiant.Nom'Prenom' : Etudiant.Prenom'Age' : Etudiant.Age'Sex' : Etudiant.Sex});}
+
+
+ docEtudiant.update({'Nom' : Etudiant.Nom'Prenom' : Etudiant.Prenom'SSex' : Etudiant.SSex});
+
+}
 
 
 deleteEtudiant(Etudiant Etudiant) async {
