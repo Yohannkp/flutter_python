@@ -103,10 +103,10 @@ if choix == "2":
     nomRpository = "{}Repository".format(nom_classe)
     nomFichier = "Repository/{}Repository.dart".format(nom_classe)
     with open("{}".format(nomFichier),'w') as r:
-        r.write("import 'dart:io';\nimport 'package:cloud_firestore/cloud_firestore.dart';\nimport 'package:firebase_auth/firebase_auth.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:locationdemaison/Model/Personne.dart';\nimport 'package:locationdemaison/Model/Post.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:path/path.dart' as Path;\nclass {}".format(nomRpository))
+        r.write("import 'dart:io';\nimport 'package:cloud_firestore/cloud_firestore.dart';\nimport 'package:firebase_auth/firebase_auth.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:path/path.dart' as Path;\nclass {}".format(nomRpository))
         r.write("{")
         r.write("\n\n")
-        r.write("\nStream<List<{}>> read{}({} {})=>FirebaseFirestore.instance.collection('{}').where('uid',isEqualTo: {}.uid).snapshots().map((snapshot) => snapshot.docs.map((doc) =>{}.fromJson(doc.data())).toList());".format(nom_classe,nom_classe,nom_classe,nom_classe,nom_classe,nom_classe,nom_classe))
+        r.write("\nStream<List<{}>> read{}({} {})=>FirebaseFirestore.instance.collection('{}').where('uid',isEqualTo: {}.uid).snapshots().map((snapshot) => snapshot.docs.map((doc) =>{}.fromJson(doc.data())).toList());".format(nom_classe,nom_classe,nom_classe,nom_classe.lower(),nom_classe,nom_classe.lower(),nom_classe))
         r.write("\n") 
         r.write("\nStream<List<{}>> readAll{}()=>FirebaseFirestore.instance.collection('{}').snapshots().map((snapshot) => snapshot.docs.map((doc) =>{}.fromJson(doc.data())).toList());\n".format(nom_classe,nom_classe,nom_classe,nom_classe))
         r.write("\n\n")
@@ -118,7 +118,7 @@ if choix == "2":
         r.write("\n doc{}.update(".format(nom_classe))
         r.write("{")
         for i in range(1,nombre_attributs+1):
-            r.write("'{}' : {}.{}".format(attributs[i],nom_classe,attributs[i]))
+            r.write("'{}' : {}.{},".format(attributs[i],nom_classe,attributs[i]))
         r.write("}")
         r.write(");")
         r.write("\n\n")
@@ -128,7 +128,7 @@ if choix == "2":
         r.write("delete{}({} {}) async ".format(nom_classe,nom_classe,nom_classe))
         r.write("{")
         r.write("\nfinal doc{} = FirebaseFirestore.instance.collection('{}').doc({}.uid);".format(nom_classe,nom_classe,nom_classe))
-        r.write("\n doc{}.delete()".format(nom_classe))
+        r.write("\n doc{}.delete();".format(nom_classe))
         r.write("\n}")
 
         r.write("\n\n\n")
@@ -151,4 +151,3 @@ if choix == "2":
 """
 
 """
-
