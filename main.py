@@ -1,160 +1,178 @@
-#Creation de classes
-import os;
+import os
 
-def Menu():
-     print("Menu\n1-Authentification\n2-CRUD")
+# Dossier racine du projet
+root_directory = "recreated_project"
 
+# Définition des dossiers
+folders = {
+    "Model": os.path.join(root_directory, "Model"),
+    "Repository": os.path.join(root_directory, "Repository"),
+    "Services": os.path.join(root_directory, "Services"),
+}
 
-Menu()
-choix = input("Que voulez vous faire : ")
+# Demander le nom de la classe principale
+print("\n🔹 Entrez le nom de la classe principale utilisée dans le projet (ex: Note, Task, Message, etc.)")
+class_name = input("👉 Nom de la classe (laisser vide pour 'Note') : ").strip()
+if not class_name:
+    class_name = "Note"
 
-if choix == "1":
-        #Model D'authentification
-    with open("Model/user.dart","w") as u:
-        u.write("class AppUser")
-        u.write("{\n")
-        u.write("\n")
-        u.write("String uid;\n\n")
-        u.write("AppUser(")
-        u.write("{\n")
-        u.write("required this.uid")
-        u.write("\n")
-        u.write("});")
-        u.write("\n")
-        u.write("}")
+# Demander les attributs de la classe
+print("\n🛠️ Maintenant, définissons les attributs de la classe.")
+attributes = {}
+while True:
+    attr_name = input("👉 Nom de l'attribut (laisser vide pour arrêter) : ").strip()
+    if not attr_name:
+        break
+    attr_type = input(f"👉 Type de {attr_name} (ex: String, int, bool, double) : ").strip()
+    attributes[attr_name] = attr_type
 
-    with open("Repository/Authentification.dart","w") as h :
-        h.write("import 'package:cloud_firestore/cloud_firestore.dart';\nimport 'package:firebase_auth/firebase_auth.dart';\nimport 'package:flutter/material.dart';\nimport 'package:locationdemaison/Model/Personne.dart';\nimport 'package:locationdemaison/Model/Post.dart';\nimport 'package:locationdemaison/Model/user.dart';\n")
-        h.write("\n\n")
-        h.write("Class AuthentificationService")
-        h.write("{\n")
-        h.write("final FirebaseAuth _auth = FirebaseAuth.instance;\n\n")
-        h.write("AppUser? _userFromFireBaseUser(User? user)")
-        h.write("{\n")
-        h.write("return user != null ? AppUser(uid: user.uid) : null;")
-        h.write("")
-        h.write("\n}\n\n")
-        h.write("Stream<AppUser?> get user{\n\nreturn _auth.authStateChanges().map(_userFromFireBaseUser);\n\n}\n\n")
-        h.write("Future signInWithEmailAndPassword(String email,String password) async{\ntry{\n\t_auth.authStateChanges().listen((User? user) {\n\tif (user == null) {\n\tprint('User is currently signed out!');\n\t}else {\n\tprint('User is signed in!');\n}\n});\n\n")
-        h.write("UserCredential result =await _auth.signInWithEmailAndPassword(email: email, password: password);")
-        h.write("User? user = result.user;\nreturn _userFromFireBaseUser(user);\n\n}")
-        h.write("catch(exeption){")
-        h.write("print(exeption.toString());\n}\n}\n\n")
-        h.write("Future registerInWithEmailAndPassword(String email,String password) async{\ntry{\n\tprint('Inscription')\n;_auth.authStateChanges().listen((User? user) \n{\nif (user == null) {\nprint('User is currently signed out!');\n} else \n{\nprint('User is signed in!');\n}\n});\n\n")
-        h.write("UserCredential result =await _auth.createUserWithEmailAndPassword(email: email, password: password);\nUser? user = result.user;\nreturn _userFromFireBaseUser(user);\n}\ncatch(exeption){\nprint(exeption.toString());\n}\n\n}\n\n")
-        h.write("Future signOut() async{\ntry{\n\treturn await _auth.signOut():\n}catch(exeption){\nprint(exeption.toString());\nreturn null;\n}\n}")
-        
-        
-        
-        
-        
-        
-        
-        h.write("\n}")
-        
+# Générer le code des attributs
+attributes_code = "\n".join([f"  {attr_type} {attr};" for attr, attr_type in attributes.items()])
+constructor_params = ", ".join([f"required this.{attr}" for attr in attributes])
+toJson_code = "\n".join([f"      '{attr}': {attr}," for attr in attributes])
+fromJson_code = ", ".join([f"{attr}: json['{attr}']" for attr in attributes])
 
-if choix == "2":
-    try:
-            os.mkdir("Model")
-            os.mkdir("Repository")
-    except:
-            print("Dossier déjà existant")
+# Contenu des fichiers
+files_content = {
+    os.path.join(folders["Model"], f"{class_name}.dart"): f"""import 'package:cloud_firestore/cloud_firestore.dart';
+class {class_name} {{
+  String uid;
+{attributes_code}
 
-    print("Entrer le nom de votre classe")
-    nom_classe = input()
-    print("Combien d'attributs avez vous ?")
-    nombre_attributs = int(input())
-    attributs = ["uid"]
-    for i in range(0,nombre_attributs):
-        print("Entrer l'attribut : ",nombre_attributs)
-        attribut = input("")
-        attributs.append(attribut)
-    print(attributs[0])
-    with open('Model/{}.dart'.format(nom_classe), 'w') as f:
-        f.write("import 'package:cloud_firestore/cloud_firestore.dart';\nclass {} {}".format(nom_classe,"{\n"))
-    with open('Model/{}.dart'.format(nom_classe),'a') as g:
-                for i in range(0,len(attributs)):
-                    g.write(" String ")
-                    g.write(attributs[i])
-                    g.write(";\n")
-                g.write("{}({}".format(nom_classe,"{"))
-                for i in range(0,len(attributs)): 
-                    g.write("required this.")
-                    g.write(attributs[i])
-                    g.write(",")
-                g.write("});")
-                g.write("\n\n")
-                g.write("Map<String, dynamic> toJson(){\nreturn{\n")
-                for i in range(0,len(attributs)):
-                    g.write("'{}' : {} ,\n".format(attributs[i],attributs[i]))
-                g.write("};")
+  {class_name}({{required this.uid, {constructor_params}}});
 
-                g.write("}")
-                g.write("\n")
-                g.write("static {} fromJson(Map<String,dynamic> json) => {}(".format(nom_classe,nom_classe))
-                for i in range(0,len(attributs)):
-                    g.write("{}: json['{}'],".format(attributs[i],attributs[i]))
-                g.write(");")
-                g.write("\n\n")
-                g.write("}")
+  Map<String, dynamic> toJson() {{
+    return {{
+      'uid': uid,
+{toJson_code}
+    }};
+  }}
 
-    #Creer le repository
+  static {class_name} fromJson(Map<String, dynamic> json) => {class_name}(
+    uid: json['uid'],
+    {fromJson_code}
+  );
+}}""",
 
-    nomRpository = "{}Repository".format(nom_classe)
-    nomFichier = "Repository/{}Repository.dart".format(nom_classe)
-    with open("{}".format(nomFichier),'w') as r:
-        r.write("import 'dart:io';\nimport 'package:cloud_firestore/cloud_firestore.dart';\nimport 'package:firebase_auth/firebase_auth.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:firebase_storage/firebase_storage.dart';\nimport 'package:path/path.dart' as Path;\nclass {}".format(nomRpository))
-        r.write("{")
-        r.write("\n\n")
-        r.write("read{}({} {}) async\n".format(nom_classe,nom_classe,nom_classe.lower()))
-        r.write("{")
-        r.write("final doc{} = FirebaseFirestore.instance.collection('{}').doc({}?.uid);\n".format(nom_classe,nom_classe,nom_classe.lower()))
-        r.write("final snapshot = await doc{}.get();".format(nom_classe))
-        r.write("if(snapshot.exists){\n")
-        r.write("return {}.fromJson(snapshot.data()!);\n".format(nom_classe))
-        r.write("}")
-        r.write("}")
-        r.write("\n") 
-        r.write("\nStream<List<{}>> readAll{}()=>FirebaseFirestore.instance.collection('{}').snapshots().map((snapshot) => snapshot.docs.map((doc) =>{}.fromJson(doc.data())).toList());\n".format(nom_classe,nom_classe,nom_classe,nom_classe))
-        r.write("\n\n")
-        r.write("Future Update{}({} {}) async".format(nom_classe,nom_classe,nom_classe))
-        r.write("{\n")
-        r.write("\n\n")
-        r.write("final doc{} = FirebaseFirestore.instance.collection('{}').doc({}.uid);".format(nom_classe,nom_classe,nom_classe))
-        r.write("\n\n")
-        r.write("\n doc{}.update(".format(nom_classe))
-        r.write("{")
-        for i in range(1,nombre_attributs+1):
-            r.write("'{}' : {}.{},".format(attributs[i],nom_classe,attributs[i]))
-        r.write("}")
-        r.write(");")
-        r.write("\n\n")
-        r.write("}")
-        r.write("\n\n\n")
+    os.path.join(folders["Model"], "user.dart"): """class AppUser{
+  String uid;
+  AppUser({required this.uid});
+}""",
 
-        r.write("delete{}({} {}) async ".format(nom_classe,nom_classe,nom_classe))
-        r.write("{")
-        r.write("\nfinal doc{} = FirebaseFirestore.instance.collection('{}').doc({}.uid);".format(nom_classe,nom_classe,nom_classe))
-        r.write("\n doc{}.delete();".format(nom_classe))
-        r.write("\n}")
+    os.path.join(folders["Services"], "Authentification.dart"): """import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:locationdemaison/Model/user.dart';
 
-        r.write("\n\n\n")
+class AuthentificationService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-        r.write("Future<String?> Ajout{}({} {}) async".format(nom_classe,nom_classe,nom_classe))
-        r.write("{\n")
-        r.write("final doc{} = FirebaseFirestore.instance.collection('{}').doc();\n".format(nom_classe,nom_classe))
-        r.write("String path = doc{}.path.split('/')[1];\n".format(nom_classe))
-        r.write("{}.uid = path;\n".format(nom_classe))
-        r.write("final data = {}.toJson();\n".format(nom_classe))
-        r.write("doc{}.set(data);\nreturn path;".format(nom_classe))
-        r.write("\n}\n\n")
-        r.write("}")
+  AppUser? _userFromFireBaseUser(User? user) {
+    return user != null ? AppUser(uid: user.uid) : null;
+  }
 
-     
+  Stream<AppUser?> getCurrentUser {
+    return _auth.authStateChanges().map(_userFromFireBaseUser);
+  }
 
+  Future signInWithEmailAndPassword(String email, String password) async {
+    try {
+      UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      User? user = result.user;
+      return _userFromFireBaseUser(user);
+    } catch (exception) {
+      print(exception.toString());
+    }
+  }
 
-#Creation de la partie Authentification
+  Future registerWithEmailAndPassword(String email, String password) async {
+    try {
+      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      User? user = result.user;
+      return _userFromFireBaseUser(user);
+    } catch (exception) {
+      print(exception.toString());
+    }
+  }
 
-"""
+  Future signOut() async {
+    try {
+      return await _auth.signOut();
+    } catch (exception) {
+      print(exception.toString());
+      return null;
+    }
+  }
+}""",
 
-"""
+    os.path.join(folders["Repository"], f"{class_name}Repository.dart"): f"""import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:locationdemaison/Model/{class_name}.dart';
+
+class {class_name}Repository {{
+
+  Future<{class_name}?> read{class_name}(String uid) async {{
+    final doc{class_name} = FirebaseFirestore.instance.collection('{class_name}').doc(uid);
+    final snapshot = await doc{class_name}.get();
+    if(snapshot.exists) {{
+        return {class_name}.fromJson(snapshot.data()!);
+    }}
+    return null;
+  }}
+
+  Stream<List<{class_name}>> readAll{class_name}s() {{
+    return FirebaseFirestore.instance.collection('{class_name}')
+      .snapshots()
+      .map((snapshot) => snapshot.docs.map((doc) => {class_name}.fromJson(doc.data())).toList());
+  }}
+
+  Future<void> update{class_name}({class_name} {class_name.lower()}) async {{
+    final doc{class_name} = FirebaseFirestore.instance.collection('{class_name}').doc({class_name.lower()}.uid);
+    await doc{class_name}.update({{ {', '.join([f"'{attr}': {class_name.lower()}.{attr}" for attr in attributes])} }});
+  }}
+
+  Future<void> delete{class_name}(String uid) async {{
+    final doc{class_name} = FirebaseFirestore.instance.collection('{class_name}').doc(uid);
+    await doc{class_name}.delete();
+  }}
+
+  Future<String?> add{class_name}({class_name} {class_name.lower()}) async {{
+    final doc{class_name} = FirebaseFirestore.instance.collection('{class_name}').doc();
+    {class_name.lower()}.uid = doc{class_name}.id;
+    await doc{class_name}.set({class_name.lower()}.toJson());
+    return doc{class_name}.id;
+  }}
+}}"""
+}
+
+# Création des dossiers
+for folder in folders.values():
+    os.makedirs(folder, exist_ok=True)
+
+# Menu interactif pour modifier les fichiers
+print("\n📌 Bienvenue dans le générateur de fichiers Dart !")
+print("Vous pouvez modifier le contenu avant de générer les fichiers.\n")
+
+for file_path, content in files_content.items():
+    print(f"\n🔹 {os.path.basename(file_path)} :")
+    print("1️⃣ Conserver le contenu par défaut")
+    print("2️⃣ Modifier le contenu")
+
+    choix = input("👉 Faites votre choix (1 ou 2) : ")
+
+    if choix == "2":
+        print("\n💡 Tapez votre nouveau contenu (puis appuyez sur Entrée pour enregistrer) :")
+        print("Astuce : Tapez 'FIN' sur une ligne seule pour terminer l'édition.")
+        new_content = []
+        while True:
+            line = input()
+            if line.strip().upper() == "FIN":
+                break
+            new_content.append(line)
+        files_content[file_path] = "\n".join(new_content)
+
+# Création des fichiers avec le contenu sélectionné
+for file_path, content in files_content.items():
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+print(f"\n✅ Tous les fichiers ont été générés dans '{root_directory}' avec la classe '{class_name}' et ses attributs ! 🚀")
